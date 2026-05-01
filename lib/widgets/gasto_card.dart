@@ -56,7 +56,8 @@ class GastoCard extends StatelessWidget {
                         color: Color(categoria.color).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                            color: Color(categoria.color).withValues(alpha: 0.3),
+                            color:
+                                Color(categoria.color).withValues(alpha: 0.3),
                             width: 1.5),
                       ),
                       child: gasto.imagenPath != null

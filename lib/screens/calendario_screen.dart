@@ -84,30 +84,31 @@ class _CalendarioScreenState extends State<CalendarioScreen> {
           ],
         ),
       ),
-      body: _isLoading
-          ? const Center(
-              child: CircularProgressIndicator(color: Color(0xFF80ED99)))
-          : Column(
-              children: [
-                // Calendario
-                Card(
-                  margin: const EdgeInsets.all(16),
-                  child: TableCalendar(
-                    firstDay: DateTime.utc(2020, 1, 1),
-                    lastDay: DateTime.utc(2030, 12, 31),
-                    focusedDay: _focusedDay,
-                    selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                    headerStyle: HeaderStyle(
-                      formatButtonVisible: false,
-                      titleCentered: true,
-                      titleTextStyle: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : const Color(0xFF2C3E50),
-                      ),
-                      leftChevronIcon: Icon(
-                        Icons.chevron_left,
-                        color: isDark ? Colors.white : const Color(0xFF2C3E50),
+      body: SafeArea(
+        child: _isLoading
+            ? const Center(
+                child: CircularProgressIndicator(color: Color(0xFF80ED99)))
+            : Column(
+                children: [
+                  // Calendario
+                  Card(
+                    margin: const EdgeInsets.all(16),
+                    child: TableCalendar(
+                      firstDay: DateTime.utc(2020, 1, 1),
+                      lastDay: DateTime.utc(2030, 12, 31),
+                      focusedDay: _focusedDay,
+                      selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                      headerStyle: HeaderStyle(
+                        formatButtonVisible: false,
+                        titleCentered: true,
+                        titleTextStyle: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : const Color(0xFF2C3E50),
+                        ),
+                        leftChevronIcon: Icon(
+                          Icons.chevron_left,
+                          color: isDark ? Colors.white : const Color(0xFF2C3E50),
                       ),
                       rightChevronIcon: Icon(
                         Icons.chevron_right,
@@ -285,6 +286,7 @@ class _CalendarioScreenState extends State<CalendarioScreen> {
                 ),
               ],
             ),
+      ),
     );
   }
 }

@@ -138,10 +138,11 @@ class _ListaComprasScreenState extends State<ListaComprasScreen> {
             ),
         ],
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
+      body: SafeArea(
+        child: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
+                children: [
                 // Total de la compra
                 Container(
                   width: double.infinity,
@@ -268,6 +269,7 @@ class _ListaComprasScreenState extends State<ListaComprasScreen> {
                 ),
               ],
             ),
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _mostrarDialogoAgregar,
         icon: const Icon(Icons.add),

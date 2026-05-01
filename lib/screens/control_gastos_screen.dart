@@ -459,15 +459,16 @@ class _ControlGastosScreenState extends State<ControlGastosScreen> {
           ),
         ],
       ),
-      body: _isLoading
-          ? const Center(
-              child: CircularProgressIndicator(color: Color(0xFF80ED99)))
-          : Column(
-              children: [
-                // Total de gastos
-                Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.all(16),
+      body: SafeArea(
+        child: _isLoading
+            ? const Center(
+                child: CircularProgressIndicator(color: Color(0xFF80ED99)))
+            : Column(
+                children: [
+                  // Total de gastos
+                  Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.all(16),
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
                     color: const Color(0xFF57CC99),
@@ -653,6 +654,7 @@ class _ControlGastosScreenState extends State<ControlGastosScreen> {
                 ),
               ],
             ),
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _mostrarDialogoAgregar(),
         backgroundColor: const Color(0xFF80ED99),

@@ -139,8 +139,9 @@ class _ConfiguracionScreenState extends State<ConfiguracionScreen> {
       appBar: AppBar(
         title: const Text('⚙️ Configuración'),
       ),
-      body: ListView(
-        children: [
+      body: SafeArea(
+        child: ListView(
+          children: [
           const SizedBox(height: 20),
           const Padding(
             padding: EdgeInsets.all(16.0),
@@ -253,6 +254,7 @@ class _ConfiguracionScreenState extends State<ConfiguracionScreen> {
             ),
           ),
         ],
+      ),
       ),
     );
   }

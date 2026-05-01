@@ -18,71 +18,73 @@ class DetalleGastoScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: CustomScrollView(
-        slivers: [
-          // AppBar con imagen de fondo
-          SliverAppBar(
-            expandedHeight: 300,
-            pinned: true,
-            backgroundColor: Color(categoria.color),
-            flexibleSpace: FlexibleSpaceBar(
-              background: gasto.imagenPath != null
-                  ? GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => _ImagenPantallaCompleta(
-                              imagePath: gasto.imagenPath!,
-                              categoria: categoria,
+      body: SafeArea(
+        top: false, // Permitir que el AppBar use toda la altura
+        child: CustomScrollView(
+          slivers: [
+            // AppBar con imagen de fondo
+            SliverAppBar(
+              expandedHeight: 300,
+              pinned: true,
+              backgroundColor: Color(categoria.color),
+              flexibleSpace: FlexibleSpaceBar(
+                background: gasto.imagenPath != null
+                    ? GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => _ImagenPantallaCompleta(
+                                imagePath: gasto.imagenPath!,
+                                categoria: categoria,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          Hero(
-                            tag: 'gasto_${gasto.id}',
-                            child: Image.file(
-                              File(gasto.imagenPath!),
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: Color(categoria.color)
-                                      .withValues(alpha: 0.2),
-                                  child: Center(
-                                    child: Text(
-                                      categoria.icono,
-                                      style: const TextStyle(fontSize: 120),
+                          );
+                        },
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            Hero(
+                              tag: 'gasto_${gasto.id}',
+                              child: Image.file(
+                                File(gasto.imagenPath!),
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    color: Color(categoria.color)
+                                        .withValues(alpha: 0.2),
+                                    child: Center(
+                                      child: Text(
+                                        categoria.icono,
+                                        style: const TextStyle(fontSize: 120),
+                                      ),
                                     ),
-                                  ),
-                                );
-                              },
+                                  );
+                                },
+                              ),
                             ),
+                          ],
+                        ),
+                      )
+                    : Container(
+                        color: Color(categoria.color).withValues(alpha: 0.2),
+                        child: Center(
+                          child: Text(
+                            categoria.icono,
+                            style: const TextStyle(fontSize: 120),
                           ),
-                        ],
-                      ),
-                    )
-                  : Container(
-                      color: Color(categoria.color).withValues(alpha: 0.2),
-                      child: Center(
-                        child: Text(
-                          categoria.icono,
-                          style: const TextStyle(fontSize: 120),
                         ),
                       ),
-                    ),
+              ),
             ),
-          ),
 
-          // Contenido
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+            // Contenido
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                   // Nombre y categoría
                   Row(
                     children: [
@@ -182,47 +184,48 @@ class DetalleGastoScreen extends StatelessWidget {
                     const SizedBox(height: 32),
                   ],
 
-                  // Detalles financieros
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF57CC99).withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: const Color(0xFF57CC99).withValues(alpha: 0.3),
+                    // Detalles financieros
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF57CC99).withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: const Color(0xFF57CC99).withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          _buildDetailRow(
+                            'Precio unitario',
+                            currencyFormat.format(gasto.precio),
+                            Icons.attach_money,
+                            isDark,
+                          ),
+                          const Divider(height: 24),
+                          _buildDetailRow(
+                            'Cantidad',
+                            '${gasto.cantidad}',
+                            Icons.shopping_cart,
+                            isDark,
+                          ),
+                          const Divider(height: 24),
+                          _buildDetailRow(
+                            'Total',
+                            currencyFormat.format(gasto.subtotal),
+                            Icons.payments,
+                            isDark,
+                            isTotal: true,
+                          ),
+                        ],
                       ),
                     ),
-                    child: Column(
-                      children: [
-                        _buildDetailRow(
-                          'Precio unitario',
-                          currencyFormat.format(gasto.precio),
-                          Icons.attach_money,
-                          isDark,
-                        ),
-                        const Divider(height: 24),
-                        _buildDetailRow(
-                          'Cantidad',
-                          '${gasto.cantidad}',
-                          Icons.shopping_cart,
-                          isDark,
-                        ),
-                        const Divider(height: 24),
-                        _buildDetailRow(
-                          'Total',
-                          currencyFormat.format(gasto.subtotal),
-                          Icons.payments,
-                          isDark,
-                          isTotal: true,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -271,7 +274,9 @@ class DetalleGastoScreen extends StatelessWidget {
       ],
     );
   }
+
 }
+
 
 class _ImagenPantallaCompleta extends StatelessWidget {
   final String imagePath;

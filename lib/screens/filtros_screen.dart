@@ -81,9 +81,10 @@ class _FiltrosScreenState extends State<FiltrosScreen> {
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
           // Categoría
           Card(
             child: Padding(
@@ -297,6 +298,7 @@ class _FiltrosScreenState extends State<FiltrosScreen> {
             ),
           ),
         ],
+      ),
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
