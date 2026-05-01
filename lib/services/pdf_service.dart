@@ -207,16 +207,17 @@ class PdfService {
             ),
             pw.SizedBox(height: 8),
 
-            // Encabezado de la tabla
+            // Tabla continua de gastos
             pw.Table(
-              border: pw.TableBorder.all(color: PdfColors.grey400),
+              border: pw.TableBorder.all(color: PdfColors.grey400, width: 0.6),
               columnWidths: {
-                0: const pw.FlexColumnWidth(3),
-                1: const pw.FlexColumnWidth(2),
-                2: const pw.FlexColumnWidth(1.5),
-                3: const pw.FlexColumnWidth(1),
-                4: const pw.FlexColumnWidth(1.5),
-                5: const pw.FlexColumnWidth(1.5),
+                0: const pw.FlexColumnWidth(3.0),
+                1: const pw.FlexColumnWidth(4.2),
+                2: const pw.FlexColumnWidth(2.2),
+                3: const pw.FlexColumnWidth(1.4),
+                4: const pw.FlexColumnWidth(0.9),
+                5: const pw.FlexColumnWidth(1.4),
+                6: const pw.FlexColumnWidth(1.4),
               },
               children: [
                 pw.TableRow(
@@ -224,61 +225,66 @@ class PdfService {
                     color: PdfColors.teal700,
                   ),
                   children: [
-                    _buildTableHeader('Concepto / Descripción'),
+                    _buildTableHeader('Concepto'),
+                    _buildTableHeader('Descripción'),
                     _buildTableHeader('Categoría'),
                     _buildTableHeader('Fecha'),
-                    _buildTableHeader('Cant.'),
-                    _buildTableHeader('Precio U.'),
-                    _buildTableHeader('Subtotal'),
+                    _buildTableHeader('Cant.', align: pw.TextAlign.center),
+                    _buildTableHeader('Precio U.', align: pw.TextAlign.right),
+                    _buildTableHeader('Subtotal', align: pw.TextAlign.right),
                   ],
                 ),
-              ],
-            ),
+                ...gastosOrdenados.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final gasto = entry.value;
+                  final rowColor =
+                      index % 2 == 0 ? PdfColors.white : PdfColors.grey100;
+                  final descripcion = gasto.descripcion?.trim() ?? '';
+                  final concepto = _truncateText(gasto.nombre, 28);
 
-            // Filas de gastos (se pueden dividir entre páginas)
-            ...gastosOrdenados.map((gasto) {
-              return pw.Table(
-                border: pw.TableBorder.all(color: PdfColors.grey400),
-                columnWidths: {
-                  0: const pw.FlexColumnWidth(3),
-                  1: const pw.FlexColumnWidth(2),
-                  2: const pw.FlexColumnWidth(1.5),
-                  3: const pw.FlexColumnWidth(1),
-                  4: const pw.FlexColumnWidth(1.5),
-                  5: const pw.FlexColumnWidth(1.5),
-                },
-                children: [
-                  pw.TableRow(
-                    decoration: pw.BoxDecoration(
-                      color: gastosOrdenados.indexOf(gasto) % 2 == 0
-                          ? PdfColors.white
-                          : PdfColors.grey100,
-                    ),
+                  return pw.TableRow(
+                    decoration: pw.BoxDecoration(color: rowColor),
                     children: [
-                      _buildConceptoDescripcionCell(gasto.nombre, gasto.descripcion),
-                      _buildTableCell(gasto.categoria),
-                      _buildTableCell(
-                        dateFormat.format(gasto.fechaCreacion),
-                        fontSize: 8,
+                      _buildCompactCell(
+                        concepto,
+                        bold: true,
+                        color: PdfColors.teal700,
+                        fontSize: 8.5,
+                        maxLines: 2,
                       ),
-                      _buildTableCell(
+                      _buildCompactCell(
+                        descripcion.isEmpty ? '-' : descripcion,
+                        fontSize: 7.2,
+                        padding: const pw.EdgeInsets.symmetric(
+                            horizontal: 2, vertical: 1),
+                        color: PdfColors.grey800,
+                      ),
+                      _buildCompactCell(gasto.categoria, fontSize: 8),
+                      _buildCompactCell(
+                        dateFormat.format(gasto.fechaCreacion),
+                        fontSize: 7.5,
+                      ),
+                      _buildCompactCell(
                         gasto.cantidad.toString(),
                         align: pw.TextAlign.center,
+                        fontSize: 8,
                       ),
-                      _buildTableCell(
+                      _buildCompactCell(
                         currencyFormat.format(gasto.precio),
                         align: pw.TextAlign.right,
+                        fontSize: 8,
                       ),
-                      _buildTableCell(
+                      _buildCompactCell(
                         currencyFormat.format(gasto.subtotal),
                         align: pw.TextAlign.right,
+                        fontSize: 8.2,
                         bold: true,
                       ),
                     ],
-                  ),
-                ],
-              );
-            }).toList(),
+                  );
+                }).toList(),
+              ],
+            ),
 
             pw.SizedBox(height: 24),
 
@@ -462,35 +468,86 @@ class PdfService {
     );
   }
 
-  static pw.Widget _buildConceptoDescripcionCell(String concepto, String? descripcion) {
+  static pw.Widget _buildCompactCell(
+    String text, {
+    bool bold = false,
+    pw.TextAlign align = pw.TextAlign.left,
+    double fontSize = 8,
+    PdfColor? color,
+    pw.EdgeInsets? padding,
+    int? maxLines,
+  }) {
     return pw.Padding(
-      padding: const pw.EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-      child: pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.Text(
-            concepto,
-            style: pw.TextStyle(
-              fontSize: 9,
-              fontWeight: pw.FontWeight.bold,
-              color: PdfColors.teal700,
-            ),
-            maxLines: 2,
-            softWrap: true,
+      padding: padding ??
+          const pw.EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+      child: pw.Text(
+        text,
+        style: pw.TextStyle(
+          fontSize: fontSize,
+          fontWeight: bold ? pw.FontWeight.bold : pw.FontWeight.normal,
+          color: color ?? PdfColors.grey900,
+        ),
+        textAlign: align,
+        maxLines: maxLines,
+        softWrap: true,
+      ),
+    );
+  }
+
+  static String _truncateText(String value, int maxChars) {
+    final trimmed = value.trim();
+    if (trimmed.length <= maxChars) {
+      return trimmed;
+    }
+    return '${trimmed.substring(0, maxChars - 1)}…';
+  }
+
+  static pw.Widget _buildHeaderCell(
+    String text, {
+    required int flex,
+    pw.TextAlign align = pw.TextAlign.left,
+  }) {
+    return pw.Expanded(
+      flex: flex,
+      child: pw.Padding(
+        padding: const pw.EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+        child: pw.Text(
+          text,
+          style: pw.TextStyle(
+            fontSize: 9,
+            fontWeight: pw.FontWeight.bold,
+            color: PdfColors.white,
           ),
-          if (descripcion != null && descripcion.isNotEmpty)
-            pw.SizedBox(height: 2),
-          if (descripcion != null && descripcion.isNotEmpty)
-            pw.Text(
-              descripcion,
-              style: const pw.TextStyle(
-                fontSize: 8,
-                color: PdfColors.grey700,
-              ),
-              maxLines: 2,
-              softWrap: true,
-            ),
-        ],
+          textAlign: align,
+        ),
+      ),
+    );
+  }
+
+  static pw.Widget _buildRowCell(
+    String text, {
+    required int flex,
+    pw.TextAlign align = pw.TextAlign.left,
+    bool bold = false,
+    PdfColor? color,
+    double fontSize = 9,
+    int? maxLines,
+  }) {
+    return pw.Expanded(
+      flex: flex,
+      child: pw.Padding(
+        padding: const pw.EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+        child: pw.Text(
+          text,
+          style: pw.TextStyle(
+            fontSize: fontSize,
+            fontWeight: bold ? pw.FontWeight.bold : pw.FontWeight.normal,
+            color: color ?? PdfColors.grey900,
+          ),
+          textAlign: align,
+          maxLines: maxLines,
+          softWrap: true,
+        ),
       ),
     );
   }

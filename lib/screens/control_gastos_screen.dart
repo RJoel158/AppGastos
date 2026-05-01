@@ -460,122 +460,156 @@ class _ControlGastosScreenState extends State<ControlGastosScreen> {
         ],
       ),
       body: SafeArea(
-        child: _isLoading
-            ? const Center(
-                child: CircularProgressIndicator(color: Color(0xFF80ED99)))
-            : Column(
-                children: [
-                  // Total de gastos
-                  Container(
-                    width: double.infinity,
-                    margin: const EdgeInsets.all(16),
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF57CC99),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF80ED99).withValues(alpha: 0.3),
-                        blurRadius: 15,
-                        offset: const Offset(0, 5),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final maxContentWidth =
+                constraints.maxWidth >= 900 ? 840.0 : double.infinity;
+            final horizontalPadding =
+                constraints.maxWidth >= 600 ? 24.0 : 16.0;
+
+            Widget centered(Widget child) {
+              return Align(
+                alignment: Alignment.topCenter,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: maxContentWidth),
+                  child: child,
+                ),
+              );
+            }
+
+            if (_isLoading) {
+              return const Center(
+                child: CircularProgressIndicator(color: Color(0xFF80ED99)),
+              );
+            }
+
+            return Column(
+              children: [
+                // Total de gastos
+                centered(
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(
+                        horizontalPadding, 16, horizontalPadding, 16),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF57CC99),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF80ED99)
+                                .withValues(alpha: 0.3),
+                            blurRadius: 15,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      const Icon(Icons.account_balance_wallet,
-                          color: Colors.white, size: 40),
-                      const SizedBox(height: 12),
-                      Text(
-                        'Total de gastos',
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  color: Colors.white.withValues(alpha: 0.9),
-                                ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        currencyFormat.format(_totalGastos),
-                        style:
-                            Theme.of(context).textTheme.headlineLarge?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  fontSize: 36,
-                                ),
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                      child: Column(
                         children: [
-                          Icon(Icons.receipt,
-                              color: Colors.white.withValues(alpha: 0.9),
-                              size: 16),
-                          const SizedBox(width: 4),
+                          const Icon(Icons.account_balance_wallet,
+                              color: Colors.white, size: 40),
+                          const SizedBox(height: 12),
                           Text(
-                            '${_gastosFiltrados.length} registro${_gastosFiltrados.length != 1 ? 's' : ''}',
+                            'Total de gastos',
                             style: Theme.of(context)
                                 .textTheme
-                                .bodyMedium
+                                .titleMedium
                                 ?.copyWith(
                                   color: Colors.white.withValues(alpha: 0.9),
                                 ),
                           ),
+                          const SizedBox(height: 8),
+                          Text(
+                            currencyFormat.format(_totalGastos),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineLarge
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  fontSize: 36,
+                                ),
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.receipt,
+                                  color: Colors.white.withValues(alpha: 0.9),
+                                  size: 16),
+                              const SizedBox(width: 4),
+                              Text(
+                                '${_gastosFiltrados.length} registro${_gastosFiltrados.length != 1 ? 's' : ''}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color:
+                                          Colors.white.withValues(alpha: 0.9),
+                                    ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
 
                 // Resumen por categorías
                 if (_gastosPorCategoria.isNotEmpty) ...[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: SizedBox(
-                      height: 58,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: _gastosPorCategoria.length,
-                        itemBuilder: (context, index) {
-                          final categoria =
-                              _gastosPorCategoria.keys.elementAt(index);
-                          final monto = _gastosPorCategoria[categoria]!;
-                          final cat =
-                              CategoriaGasto.obtenerCategoria(categoria);
+                  centered(
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: horizontalPadding),
+                      child: SizedBox(
+                        height: 58,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: _gastosPorCategoria.length,
+                          itemBuilder: (context, index) {
+                            final categoria =
+                                _gastosPorCategoria.keys.elementAt(index);
+                            final monto = _gastosPorCategoria[categoria]!;
+                            final cat =
+                                CategoriaGasto.obtenerCategoria(categoria);
 
-                          return Container(
-                            width: 110,
-                            margin: const EdgeInsets.only(right: 10),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 3),
-                            decoration: BoxDecoration(
-                              color: Color(cat.color).withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Color(cat.color)),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(cat.icono,
-                                    style: const TextStyle(fontSize: 16)),
-                                Text(
-                                  categoria,
-                                  style: const TextStyle(fontSize: 9),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                Text(
-                                  currencyFormat.format(monto),
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(cat.color),
+                            return Container(
+                              width: 110,
+                              margin: const EdgeInsets.only(right: 10),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: Color(cat.color).withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: Color(cat.color)),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(cat.icono,
+                                      style: const TextStyle(fontSize: 16)),
+                                  Text(
+                                    categoria,
+                                    style: const TextStyle(fontSize: 9),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
+                                  Text(
+                                    currencyFormat.format(monto),
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(cat.color),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
@@ -585,75 +619,94 @@ class _ControlGastosScreenState extends State<ControlGastosScreen> {
                 // Lista de gastos
                 Expanded(
                   child: _gastosFiltrados.isEmpty
-                      ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                hasFiltros
-                                    ? Icons.search_off
-                                    : Icons.receipt_long_outlined,
-                                size: 100,
-                                color: const Color(0xFF80ED99)
-                                    .withValues(alpha: 0.3),
+                      ? centered(
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: horizontalPadding),
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    hasFiltros
+                                        ? Icons.search_off
+                                        : Icons.receipt_long_outlined,
+                                    size: 100,
+                                    color: const Color(0xFF80ED99)
+                                        .withValues(alpha: 0.3),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    hasFiltros
+                                        ? 'Sin resultados'
+                                        : 'No hay gastos registrados',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall
+                                        ?.copyWith(
+                                          color: Colors.grey[600],
+                                        ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    hasFiltros
+                                        ? 'Intenta ajustar los filtros'
+                                        : 'Toca el botón + para agregar',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          color: Colors.grey[500],
+                                        ),
+                                  ),
+                                ],
                               ),
-                              const SizedBox(height: 16),
-                              Text(
-                                hasFiltros
-                                    ? 'Sin resultados'
-                                    : 'No hay gastos registrados',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall
-                                    ?.copyWith(
-                                      color: Colors.grey[600],
-                                    ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                hasFiltros
-                                    ? 'Intenta ajustar los filtros'
-                                    : 'Toca el botón + para agregar',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
-                                      color: Colors.grey[500],
-                                    ),
-                              ),
-                            ],
+                            ),
                           ),
                         )
-                      : ListView.builder(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          itemCount: _gastosFiltrados.length,
-                          itemBuilder: (context, index) {
-                            final gasto = _gastosFiltrados[index];
-                            return GastoCard(
-                              gasto: gasto,
-                              onIncrementar: () => _actualizarCantidad(
-                                  gasto, gasto.cantidad + 1),
-                              onDecrementar: () => _actualizarCantidad(
-                                  gasto, gasto.cantidad - 1),
-                              onEliminar: () => _eliminarGasto(gasto),
-                              onEditar: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        DetalleGastoScreen(gasto: gasto),
-                                  ),
+                      : centered(
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: horizontalPadding),
+                            child: ListView.builder(
+                              padding: EdgeInsets.zero,
+                              itemCount: _gastosFiltrados.length,
+                              itemBuilder: (context, index) {
+                                final gasto = _gastosFiltrados[index];
+                                return GastoCard(
+                                  gasto: gasto,
+                                  onIncrementar: () => _actualizarCantidad(
+                                      gasto, gasto.cantidad + 1),
+                                  onDecrementar: () => _actualizarCantidad(
+                                      gasto, gasto.cantidad - 1),
+                                  onEliminar: () => _eliminarGasto(gasto),
+                                  onEditar: () async {
+                                    final actualizado =
+                                        await Navigator.push<bool>(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            DetalleGastoScreen(gasto: gasto),
+                                      ),
+                                    );
+                                    if (!mounted) return;
+                                    if (actualizado == true) {
+                                      _cargarGastos();
+                                    }
+                                  },
+                                  onAgregarImagen: gasto.imagenPath == null
+                                      ? () => _agregarImagenAGasto(gasto)
+                                      : null,
                                 );
                               },
-                              onAgregarImagen: gasto.imagenPath == null
-                                  ? () => _agregarImagenAGasto(gasto)
-                                  : null,
-                            );
-                          },
+                            ),
+                          ),
                         ),
                 ),
               ],
-            ),
+            );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _mostrarDialogoAgregar(),

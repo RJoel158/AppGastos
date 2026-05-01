@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import '../models/producto.dart';
 import '../models/categoria_gasto.dart';
 import '../services/image_service.dart';
@@ -25,10 +26,13 @@ class _AgregarGastoDialogState extends State<AgregarGastoDialog> {
   String _categoriaSeleccionada = 'Otros';
   String? _imagenPath;
   final ImagePicker _picker = ImagePicker();
+  DateTime _fechaSeleccionada = DateTime.now();
+  late DateTime _horaBase;
 
   @override
   void initState() {
     super.initState();
+    final ahora = DateTime.now();
     if (widget.gasto != null) {
       _nombreController.text = widget.gasto!.nombre;
       _precioController.text = widget.gasto!.precio.toString();
@@ -36,6 +40,15 @@ class _AgregarGastoDialogState extends State<AgregarGastoDialog> {
       _descripcionController.text = widget.gasto!.descripcion ?? '';
       _categoriaSeleccionada = widget.gasto!.categoria;
       _imagenPath = widget.gasto!.imagenPath;
+      _fechaSeleccionada = DateTime(
+        widget.gasto!.fechaCreacion.year,
+        widget.gasto!.fechaCreacion.month,
+        widget.gasto!.fechaCreacion.day,
+      );
+      _horaBase = widget.gasto!.fechaCreacion;
+    } else {
+      _fechaSeleccionada = DateTime(ahora.year, ahora.month, ahora.day);
+      _horaBase = ahora;
     }
   }
 
@@ -181,8 +194,33 @@ class _AgregarGastoDialogState extends State<AgregarGastoDialog> {
     );
   }
 
+  Future<void> _seleccionarFecha() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _fechaSeleccionada,
+      firstDate: DateTime(2020, 1, 1),
+      lastDate: DateTime(2030, 12, 31),
+    );
+
+    if (picked != null) {
+      setState(() {
+        _fechaSeleccionada = DateTime(picked.year, picked.month, picked.day);
+      });
+    }
+  }
+
   void _guardar() {
     if (_formKey.currentState!.validate()) {
+      final fechaFinal = DateTime(
+        _fechaSeleccionada.year,
+        _fechaSeleccionada.month,
+        _fechaSeleccionada.day,
+        _horaBase.hour,
+        _horaBase.minute,
+        _horaBase.second,
+        _horaBase.millisecond,
+        _horaBase.microsecond,
+      );
       final gasto = Producto(
         id: widget.gasto?.id,
         nombre: _nombreController.text.trim(),
@@ -193,6 +231,7 @@ class _AgregarGastoDialogState extends State<AgregarGastoDialog> {
         descripcion: _descripcionController.text.trim().isEmpty
             ? null
             : _descripcionController.text.trim(),
+        fechaCreacion: fechaFinal,
       );
       Navigator.pop(context, gasto);
     }
@@ -208,13 +247,15 @@ class _AgregarGastoDialogState extends State<AgregarGastoDialog> {
     final borderColor = isDark ? Colors.grey[700]! : Colors.grey[300]!;
     final fieldBgColor =
         isDark ? const Color(0xFF2C2C2C) : const Color(0xFFF8F9FA);
+    final dateFormat = DateFormat('dd/MM/yyyy');
+    final maxDialogHeight = MediaQuery.of(context).size.height * 0.9;
 
     return Dialog(
       backgroundColor: bgColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 500, maxHeight: 650),
+        constraints: BoxConstraints(maxWidth: 520, maxHeight: maxDialogHeight),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -467,6 +508,50 @@ class _AgregarGastoDialogState extends State<AgregarGastoDialog> {
                             ),
                           ),
                         ],
+                      ),
+                      const SizedBox(height: 14),
+
+                      // Fecha
+                      Text(
+                        'Fecha del gasto',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: subtextColor,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      InkWell(
+                        onTap: _seleccionarFecha,
+                        borderRadius: BorderRadius.circular(12),
+                        child: InputDecorator(
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: fieldBgColor,
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 12),
+                            prefixIcon: const Icon(Icons.calendar_today,
+                                color: Color(0xFF57CC99), size: 20),
+                            suffixIcon: Icon(Icons.edit_calendar,
+                                color: subtextColor, size: 20),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: borderColor),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: borderColor),
+                            ),
+                          ),
+                          child: Text(
+                            dateFormat.format(_fechaSeleccionada),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: textColor,
+                            ),
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 14),
 
