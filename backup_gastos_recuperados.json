@@ -1,0 +1,346 @@
+{
+  "productos": [
+    {
+      "id": 1,
+      "nombre": "Pollo Dorado",
+      "descripcion": "Almuerzo pensión elba",
+      "precio": 18.0,
+      "cantidad": 1,
+      "categoria": "Alimentos",
+      "fechaCreacion": "2026-01-01T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 2,
+      "nombre": "Grifoparkin",
+      "descripcion": "Son 60 pastillas de grifoparkin",
+      "precio": 484.5,
+      "cantidad": 1,
+      "categoria": "Salud",
+      "fechaCreacion": "2026-01-01T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 3,
+      "nombre": "Api Pastel Y Buñuelo",
+      "descripcion": "Quillacollo desayuno.",
+      "precio": 15.0,
+      "cantidad": 1,
+      "categoria": "Alimentos",
+      "fechaCreacion": "2026-01-02T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 4,
+      "nombre": "Sopa",
+      "descripcion": "Sopa de choclo . Por qué estoy horneado pollo y chancho",
+      "precio": 7.0,
+      "cantidad": 1,
+      "categoria": "Alimentos",
+      "fechaCreacion": "2026-01-02T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 5,
+      "nombre": "Pasajes",
+      "descripcion": "Pasajes de ida al ssu para la programación de sus citas medicas de",
+      "precio": 12.0,
+      "cantidad": 1,
+      "categoria": "Salud",
+      "fechaCreacion": "2026-01-05T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 6,
+      "nombre": "Almuerzo",
+      "descripcion": "sopa por que solo cocine seco Por qué fui a programar sus citas",
+      "precio": 6.0,
+      "cantidad": 1,
+      "categoria": "Alimentos",
+      "fechaCreacion": "2026-01-05T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 7,
+      "nombre": "Apio Con Pastel",
+      "descripcion": "Quería en la noche del sábado y se partió con Jerico",
+      "precio": 14.0,
+      "cantidad": 1,
+      "categoria": "Alimentos",
+      "fechaCreacion": "2026-01-05T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 8,
+      "nombre": "Por Agradecimiento A La Enfermera.Por Canaston De Fin De",
+      "descripcion": "Pago a Daritza Capriles Jordan enfermera.",
+      "precio": 150.0,
+      "cantidad": 1,
+      "categoria": "Otros",
+      "fechaCreacion": "2026-01-05T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 9,
+      "nombre": "Fisioterapeuta",
+      "descripcion": "Lic Cristina Sandoval. Hoy 6 de enero le hizo fisioterapia de 3 de",
+      "precio": 50.0,
+      "cantidad": 1,
+      "categoria": "Salud",
+      "fechaCreacion": "2026-01-06T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 10,
+      "nombre": "Empanada",
+      "descripcion": "Ida al doctor neumólogo",
+      "precio": 5.0,
+      "cantidad": 1,
+      "categoria": "Alimentos",
+      "fechaCreacion": "2026-01-07T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 11,
+      "nombre": "Almuerzos",
+      "descripcion": "Almuerzos de martes y miércoles Por motivo de relación de la cosina y de",
+      "precio": 15.0,
+      "cantidad": 2,
+      "categoria": "Alimentos",
+      "fechaCreacion": "2026-01-07T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 12,
+      "nombre": "Fisioterapia",
+      "descripcion": "1 sección de fisioterapia lic Cristina Sandoval",
+      "precio": 50.0,
+      "cantidad": 1,
+      "categoria": "Salud",
+      "fechaCreacion": "2026-01-08T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 13,
+      "nombre": "Refresco",
+      "descripcion": "Salimos a pasear y me pidió refresco.",
+      "precio": 3.0,
+      "cantidad": 1,
+      "categoria": "Alimentos",
+      "fechaCreacion": "2026-01-09T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 14,
+      "nombre": "Almuerzo",
+      "descripcion": "Almu de día sábado pAcu de 50 bs , de tras del surtidor cochabamba",
+      "precio": 50.0,
+      "cantidad": 1,
+      "categoria": "Alimentos",
+      "fechaCreacion": "2026-01-10T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 15,
+      "nombre": "Gastos Varios",
+      "descripcion": "Jugos de durazno 14.40 Shampoo anticaspa 26,20",
+      "precio": 77.33,
+      "cantidad": 1,
+      "categoria": "Otros",
+      "fechaCreacion": "2026-01-11T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 16,
+      "nombre": "Api , Empanada",
+      "descripcion": "Salimos a consulta al ssu a su cita con la psiquiatra 7:00 y se compró desayuno.",
+      "precio": 10.0,
+      "cantidad": 1,
+      "categoria": "Alimentos",
+      "fechaCreacion": "2026-01-12T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 17,
+      "nombre": "Consulta Medica Psiquiatría.",
+      "descripcion": "Taxi de ida y vuelta De la casa al seguro 15 bs y del seguro a",
+      "precio": 33.0,
+      "cantidad": 1,
+      "categoria": "Salud",
+      "fechaCreacion": "2026-01-12T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 18,
+      "nombre": "Pinturas",
+      "descripcion": "1 pintura monopol pastel crema 105bs 1 sellante 30bs",
+      "precio": 150.0,
+      "cantidad": 1,
+      "categoria": "Hogar",
+      "fechaCreacion": "2026-01-12T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 19,
+      "nombre": "Fisioterapia.",
+      "descripcion": "Fisioterapia con la lic Cristina 1 sección hoy martes 13 de enero de 3 a 4 de la",
+      "precio": 50.0,
+      "cantidad": 1,
+      "categoria": "Salud",
+      "fechaCreacion": "2026-01-13T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 20,
+      "nombre": "Pago De Semapa Y Elfec",
+      "descripcion": "Semapa 163.20 Elfec    22",
+      "precio": 185.2,
+      "cantidad": 1,
+      "categoria": "Hogar",
+      "fechaCreacion": "2026-01-14T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 21,
+      "nombre": "Piso De  Linolio",
+      "descripcion": "Piso de linolio para su cuarto 4.35  x 65 bs MTRS  282 bs.",
+      "precio": 307.0,
+      "cantidad": 1,
+      "categoria": "Hogar",
+      "fechaCreacion": "2026-01-16T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 22,
+      "nombre": "Fisioterapia .",
+      "descripcion": "Fisioterapia con la lic Cristina Sandoval ./ jueves 15 de enero.",
+      "precio": 50.0,
+      "cantidad": 1,
+      "categoria": "Salud",
+      "fechaCreacion": "2026-01-16T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 23,
+      "nombre": "Empanada",
+      "descripcion": "Salimos a comprar frutas y verduras altercado de vidrio lux , y al volver quería",
+      "precio": 4.0,
+      "cantidad": 1,
+      "categoria": "Alimentos",
+      "fechaCreacion": "2026-01-16T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 24,
+      "nombre": "Frutilla",
+      "descripcion": "Frutilla , para jugo y su compota con Maicena .",
+      "precio": 12.0,
+      "cantidad": 1,
+      "categoria": "Alimentos",
+      "fechaCreacion": "2026-01-16T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 25,
+      "nombre": "Almuerzo",
+      "descripcion": "Almuerzo completo. No me siento bien me duele mis fracturas",
+      "precio": 15.0,
+      "cantidad": 1,
+      "categoria": "Alimentos",
+      "fechaCreacion": "2026-01-20T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 26,
+      "nombre": "Fisioterapia",
+      "descripcion": "Pagado a la lic Cristina por 2 secciones, de hoy martes 20 y de día jueves22 de",
+      "precio": 50.0,
+      "cantidad": 2,
+      "categoria": "Salud",
+      "fechaCreacion": "2026-01-20T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 27,
+      "nombre": "Leches Y Bi¥ogut Pil",
+      "descripcion": "5 leches deslacteosadas . 1 bio yogurt . Me olvidé anotar el día domingo 18 ,enero .",
+      "precio": 67.5,
+      "cantidad": 1,
+      "categoria": "Alimentos",
+      "fechaCreacion": "2026-01-21T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 28,
+      "nombre": "Frutas",
+      "descripcion": "12 guineas 12 bs 8 ciruelas   10 bs",
+      "precio": 22.0,
+      "cantidad": 1,
+      "categoria": "Alimentos",
+      "fechaCreacion": "2026-01-23T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 29,
+      "nombre": "Enfermera",
+      "descripcion": "Pago a enfermera bs Lucila por 12hrs a 15bs igual a 180bs.",
+      "precio": 180.0,
+      "cantidad": 1,
+      "categoria": "Salud",
+      "fechaCreacion": "2026-01-24T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 30,
+      "nombre": "Cena Pollo Rusell",
+      "descripcion": "Cena para mamá y par la enfermera. 40cs.",
+      "precio": 20.0,
+      "cantidad": 2,
+      "categoria": "Alimentos",
+      "fechaCreacion": "2026-01-24T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 31,
+      "nombre": "Fisioterapia",
+      "descripcion": "1 sección de fisioterapia con la lic Cristina Sandoval hoy 27 de enero de 3 a",
+      "precio": 50.0,
+      "cantidad": 1,
+      "categoria": "Salud",
+      "fechaCreacion": "2026-01-27T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 32,
+      "nombre": "Empanadas",
+      "descripcion": "Del gema",
+      "precio": 4.0,
+      "cantidad": 3,
+      "categoria": "Alimentos",
+      "fechaCreacion": "2026-01-29T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 33,
+      "nombre": "Fisioterapia",
+      "descripcion": "1 sección de 3 a la tarde de la lic. Cristina Sandoval.",
+      "precio": 50.0,
+      "cantidad": 1,
+      "categoria": "Salud",
+      "fechaCreacion": "2026-01-29T12:00:00.000",
+      "imagenPath": null
+    },
+    {
+      "id": 34,
+      "nombre": "Pan Y Empanada",
+      "descripcion": "Pan y empanada de pan de la cancha. ( No come si le doy pan de batalla)",
+      "precio": 3.5,
+      "cantidad": 2,
+      "categoria": "Alimentos",
+      "fechaCreacion": "2026-01-31T12:00:00.000",
+      "imagenPath": null
+    }
+  ],
+  "version": "1.0",
+  "fecha_exportacion": "2026-02-04T12:00:00.000"
+}

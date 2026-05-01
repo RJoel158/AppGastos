@@ -10,6 +10,7 @@ class GastoCard extends StatelessWidget {
   final VoidCallback onDecrementar;
   final VoidCallback onEliminar;
   final VoidCallback onEditar;
+  final VoidCallback? onAgregarImagen;
 
   const GastoCard({
     super.key,
@@ -18,6 +19,7 @@ class GastoCard extends StatelessWidget {
     required this.onDecrementar,
     required this.onEliminar,
     required this.onEditar,
+    this.onAgregarImagen,
   });
 
   @override
@@ -43,41 +45,67 @@ class GastoCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Imagen o ícono
-                  Container(
-                    width: 65,
-                    height: 65,
-                    decoration: BoxDecoration(
-                      color: Color(categoria.color).withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                          color: Color(categoria.color).withValues(alpha: 0.3),
-                          width: 1.5),
-                    ),
-                    child: gasto.imagenPath != null
-                        ? ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Hero(
-                              tag: 'gasto_${gasto.id}',
-                              child: Image.file(
-                                File(gasto.imagenPath!),
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Center(
-                                    child: Text(
-                                      categoria.icono,
-                                      style: const TextStyle(fontSize: 32),
-                                    ),
-                                  );
-                                },
+                  GestureDetector(
+                    onTap: gasto.imagenPath == null && onAgregarImagen != null
+                        ? onAgregarImagen
+                        : null,
+                    child: Container(
+                      width: 65,
+                      height: 65,
+                      decoration: BoxDecoration(
+                        color: Color(categoria.color).withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                            color: Color(categoria.color).withValues(alpha: 0.3),
+                            width: 1.5),
+                      ),
+                      child: gasto.imagenPath != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Hero(
+                                tag: 'gasto_${gasto.id}',
+                                child: Image.file(
+                                  File(gasto.imagenPath!),
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Center(
+                                      child: Text(
+                                        categoria.icono,
+                                        style: const TextStyle(fontSize: 32),
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
+                            )
+                          : Stack(
+                              children: [
+                                Center(
+                                  child: Text(
+                                    categoria.icono,
+                                    style: const TextStyle(fontSize: 28),
+                                  ),
+                                ),
+                                if (onAgregarImagen != null)
+                                  Positioned(
+                                    bottom: 2,
+                                    right: 2,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF57CC99),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: const Icon(
+                                        Icons.add_photo_alternate,
+                                        size: 12,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                              ],
                             ),
-                          )
-                        : Center(
-                            child: Text(
-                              categoria.icono,
-                              style: const TextStyle(fontSize: 32),
-                            ),
-                          ),
+                    ),
                   ),
                   const SizedBox(width: 14),
 

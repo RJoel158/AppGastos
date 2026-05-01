@@ -109,4 +109,73 @@ class DatabaseHelper {
   Future close() async {
     // No hay nada que cerrar con SharedPreferences
   }
+
+  // Exportar todos los datos como JSON
+  Future<String> exportarDatos() async {
+    final prefs = await SharedPreferences.getInstance();
+    final productos = await readAllProductos();
+
+    // Obtener todas las claves de SharedPreferences
+    final Map<String, dynamic> todosLosDatos = {
+      'productos': productos.map((p) => p.toMap()).toList(),
+      'version': '1.0',
+      'fecha_exportacion': DateTime.now().toIso8601String(),
+    };
+
+    // Incluir otros datos de SharedPreferences si existen
+    final keys = prefs.getKeys();
+    for (String key in keys) {
+      if (key != _keyProductos) {
+        final value = prefs.get(key);
+        todosLosDatos['extra_$key'] = value;
+      }
+    }
+
+    return jsonEncode(todosLosDatos);
+  }
+
+  // Importar datos desde JSON
+  Future<bool> importarDatos(String jsonData) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final Map<String, dynamic> datos = jsonDecode(jsonData);
+
+      // Importar productos
+      if (datos.containsKey('productos')) {
+        final List<dynamic> productosData = datos['productos'];
+        final productos = productosData
+            .map((json) => Producto.fromMap(json as Map<String, dynamic>))
+            .toList();
+        await _saveProductos(prefs, productos);
+
+        // Actualizar _nextId
+        if (productos.isNotEmpty) {
+          final maxId =
+              productos.map((p) => p.id ?? 0).reduce((a, b) => a > b ? a : b);
+          _nextId = maxId + 1;
+        }
+      }
+
+      // Importar datos extra de SharedPreferences
+      datos.forEach((key, value) async {
+        if (key.startsWith('extra_')) {
+          final realKey = key.substring(6); // Remover 'extra_'
+          if (value is String) {
+            await prefs.setString(realKey, value);
+          } else if (value is int) {
+            await prefs.setInt(realKey, value);
+          } else if (value is double) {
+            await prefs.setDouble(realKey, value);
+          } else if (value is bool) {
+            await prefs.setBool(realKey, value);
+          }
+        }
+      });
+
+      return true;
+    } catch (e) {
+      print('Error al importar datos: $e');
+      return false;
+    }
+  }
 }

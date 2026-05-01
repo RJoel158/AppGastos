@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart';
 import '../models/producto.dart';
 import '../models/categoria_gasto.dart';
 import '../database/database_helper.dart';
@@ -9,6 +11,7 @@ import '../main.dart';
 import 'filtros_screen.dart';
 import 'detalle_gasto_screen.dart';
 import 'calendario_screen.dart';
+import 'configuracion_screen.dart';
 import '../services/pdf_service.dart';
 
 class ControlGastosScreen extends StatefulWidget {
@@ -33,7 +36,63 @@ class _ControlGastosScreenState extends State<ControlGastosScreen> {
   @override
   void initState() {
     super.initState();
+    _cargarFiltrosGuardados();
     _cargarGastos();
+  }
+
+  Future<void> _cargarFiltrosGuardados() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _categoriaFiltro = prefs.getString('filtro_categoria');
+      _precioMinFiltro = prefs.getDouble('filtro_precio_min');
+      _precioMaxFiltro = prefs.getDouble('filtro_precio_max');
+
+      final fechaInicioStr = prefs.getString('filtro_fecha_inicio');
+      if (fechaInicioStr != null) {
+        _fechaInicioFiltro = DateTime.parse(fechaInicioStr);
+      }
+
+      final fechaFinStr = prefs.getString('filtro_fecha_fin');
+      if (fechaFinStr != null) {
+        _fechaFinFiltro = DateTime.parse(fechaFinStr);
+      }
+    });
+  }
+
+  Future<void> _guardarFiltros() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    if (_categoriaFiltro != null) {
+      await prefs.setString('filtro_categoria', _categoriaFiltro!);
+    } else {
+      await prefs.remove('filtro_categoria');
+    }
+
+    if (_precioMinFiltro != null) {
+      await prefs.setDouble('filtro_precio_min', _precioMinFiltro!);
+    } else {
+      await prefs.remove('filtro_precio_min');
+    }
+
+    if (_precioMaxFiltro != null) {
+      await prefs.setDouble('filtro_precio_max', _precioMaxFiltro!);
+    } else {
+      await prefs.remove('filtro_precio_max');
+    }
+
+    if (_fechaInicioFiltro != null) {
+      await prefs.setString(
+          'filtro_fecha_inicio', _fechaInicioFiltro!.toIso8601String());
+    } else {
+      await prefs.remove('filtro_fecha_inicio');
+    }
+
+    if (_fechaFinFiltro != null) {
+      await prefs.setString(
+          'filtro_fecha_fin', _fechaFinFiltro!.toIso8601String());
+    } else {
+      await prefs.remove('filtro_fecha_fin');
+    }
   }
 
   Future<void> _cargarGastos() async {
@@ -184,6 +243,43 @@ class _ControlGastosScreenState extends State<ControlGastosScreen> {
     }
   }
 
+  Future<void> _agregarImagenAGasto(Producto gasto) async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? imagen = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 85,
+      );
+
+      if (imagen != null) {
+        final gastoActualizado = gasto.copyWith(imagenPath: imagen.path);
+        final resultado = await _dbHelper.update(gastoActualizado);
+
+        if (resultado > 0) {
+          _cargarGastos();
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('✅ Imagen agregada correctamente'),
+                backgroundColor: Colors.green,
+                duration: Duration(seconds: 2),
+              ),
+            );
+          }
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('❌ Error al agregar imagen: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
   Future<void> _mostrarFiltros() async {
     final resultado = await Navigator.push<Map<String, dynamic>>(
       context,
@@ -207,6 +303,7 @@ class _ControlGastosScreenState extends State<ControlGastosScreen> {
         _fechaFinFiltro = resultado['fechaFin'];
         _aplicarFiltrosLocales();
       });
+      _guardarFiltros();
     }
   }
 
@@ -279,6 +376,14 @@ class _ControlGastosScreenState extends State<ControlGastosScreen> {
                 case 'pdf':
                   _generarPDF();
                   break;
+                case 'configuracion':
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ConfiguracionScreen(),
+                    ),
+                  );
+                  break;
                 case 'limpiar':
                   _limpiarLista();
                   break;
@@ -329,6 +434,16 @@ class _ControlGastosScreenState extends State<ControlGastosScreen> {
                     ],
                   ),
                 ),
+              const PopupMenuItem(
+                value: 'configuracion',
+                child: Row(
+                  children: [
+                    Icon(Icons.settings, size: 20, color: Colors.blue),
+                    SizedBox(width: 12),
+                    Text('Configuración'),
+                  ],
+                ),
+              ),
               if (_gastos.isNotEmpty)
                 const PopupMenuItem(
                   value: 'limpiar',
@@ -529,6 +644,9 @@ class _ControlGastosScreenState extends State<ControlGastosScreen> {
                                   ),
                                 );
                               },
+                              onAgregarImagen: gasto.imagenPath == null
+                                  ? () => _agregarImagenAGasto(gasto)
+                                  : null,
                             );
                           },
                         ),
