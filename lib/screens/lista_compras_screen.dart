@@ -139,136 +139,181 @@ class _ListaComprasScreenState extends State<ListaComprasScreen> {
         ],
       ),
       body: SafeArea(
-        child: _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : Column(
-                children: [
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final maxContentWidth =
+                constraints.maxWidth >= 900 ? 820.0 : double.infinity;
+            final horizontalPadding =
+                constraints.maxWidth >= 600 ? 24.0 : 16.0;
+
+            Widget centered(Widget child) {
+              return Align(
+                alignment: Alignment.topCenter,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: maxContentWidth),
+                  child: child,
+                ),
+              );
+            }
+
+            if (_isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            return Column(
+              children: [
                 // Total de la compra
-                Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.all(16),
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Theme.of(context).colorScheme.primaryContainer,
-                        Theme.of(context).colorScheme.secondaryContainer,
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withValues(alpha: 0.2),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
+                centered(
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(
+                        horizontalPadding, 16, horizontalPadding, 16),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Theme.of(context).colorScheme.primaryContainer,
+                            Theme.of(context).colorScheme.secondaryContainer,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .primary
+                                .withValues(alpha: 0.2),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        'Total de la compra',
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                      child: Column(
+                        children: [
+                          Text(
+                            'Total de la compra',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
                                   color: Theme.of(context)
                                       .colorScheme
                                       .onPrimaryContainer,
                                 ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        currencyFormat.format(_totalCompra),
-                        style:
-                            Theme.of(context).textTheme.headlineLarge?.copyWith(
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            currencyFormat.format(_totalCompra),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineLarge
+                                ?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: Theme.of(context).colorScheme.primary,
                                 ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${_productos.length} producto${_productos.length != 1 ? 's' : ''}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onPrimaryContainer
+                                      .withValues(alpha: 0.7),
+                                ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '${_productos.length} producto${_productos.length != 1 ? 's' : ''}',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onPrimaryContainer
-                                  .withValues(alpha: 0.7),
-                            ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
 
                 // Lista de productos
                 Expanded(
                   child: _productos.isEmpty
-                      ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.shopping_cart_outlined,
-                                size: 100,
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primary
-                                    .withValues(alpha: 0.3),
+                      ? centered(
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: horizontalPadding),
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.shopping_cart_outlined,
+                                    size: 100,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary
+                                        .withValues(alpha: 0.3),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    'No hay productos',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall
+                                        ?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface
+                                              .withValues(alpha: 0.5),
+                                        ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'Toca el botón + para agregar',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface
+                                              .withValues(alpha: 0.4),
+                                        ),
+                                  ),
+                                ],
                               ),
-                              const SizedBox(height: 16),
-                              Text(
-                                'No hay productos',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall
-                                    ?.copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface
-                                          .withValues(alpha: 0.5),
-                                    ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Toca el botón + para agregar',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurface
-                                          .withValues(alpha: 0.4),
-                                    ),
-                              ),
-                            ],
+                            ),
                           ),
                         )
-                      : ListView.builder(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          itemCount: _productos.length,
-                          itemBuilder: (context, index) {
-                            final producto = _productos[index];
-                            return ProductoCard(
-                              producto: producto,
-                              onIncrementar: () => _actualizarCantidad(
-                                producto,
-                                producto.cantidad + 1,
-                              ),
-                              onDecrementar: () => _actualizarCantidad(
-                                producto,
-                                producto.cantidad - 1,
-                              ),
-                              onEliminar: () => _eliminarProducto(producto),
-                            );
-                          },
+                      : centered(
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: horizontalPadding),
+                            child: ListView.builder(
+                              padding: EdgeInsets.zero,
+                              itemCount: _productos.length,
+                              itemBuilder: (context, index) {
+                                final producto = _productos[index];
+                                return ProductoCard(
+                                  producto: producto,
+                                  onIncrementar: () => _actualizarCantidad(
+                                    producto,
+                                    producto.cantidad + 1,
+                                  ),
+                                  onDecrementar: () => _actualizarCantidad(
+                                    producto,
+                                    producto.cantidad - 1,
+                                  ),
+                                  onEliminar: () => _eliminarProducto(producto),
+                                );
+                              },
+                            ),
+                          ),
                         ),
                 ),
               ],
-            ),
+            );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _mostrarDialogoAgregar,

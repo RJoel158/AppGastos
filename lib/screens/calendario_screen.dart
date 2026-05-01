@@ -85,102 +85,135 @@ class _CalendarioScreenState extends State<CalendarioScreen> {
         ),
       ),
       body: SafeArea(
-        child: _isLoading
-            ? const Center(
-                child: CircularProgressIndicator(color: Color(0xFF80ED99)))
-            : Column(
-                children: [
-                  // Calendario
-                  Card(
-                    margin: const EdgeInsets.all(16),
-                    child: TableCalendar(
-                      firstDay: DateTime.utc(2020, 1, 1),
-                      lastDay: DateTime.utc(2030, 12, 31),
-                      focusedDay: _focusedDay,
-                      selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                      headerStyle: HeaderStyle(
-                        formatButtonVisible: false,
-                        titleCentered: true,
-                        titleTextStyle: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: isDark ? Colors.white : const Color(0xFF2C3E50),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final maxContentWidth =
+                constraints.maxWidth >= 900 ? 820.0 : double.infinity;
+            final horizontalPadding =
+                constraints.maxWidth >= 600 ? 24.0 : 16.0;
+
+            Widget centered(Widget child) {
+              return Align(
+                alignment: Alignment.topCenter,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: maxContentWidth),
+                  child: child,
+                ),
+              );
+            }
+
+            if (_isLoading) {
+              return const Center(
+                child: CircularProgressIndicator(color: Color(0xFF80ED99)),
+              );
+            }
+
+            return Column(
+              children: [
+                // Calendario
+                centered(
+                  Padding(
+                    padding: EdgeInsets.all(horizontalPadding),
+                    child: Card(
+                      margin: EdgeInsets.zero,
+                      child: TableCalendar(
+                        firstDay: DateTime.utc(2020, 1, 1),
+                        lastDay: DateTime.utc(2030, 12, 31),
+                        focusedDay: _focusedDay,
+                        selectedDayPredicate: (day) =>
+                            isSameDay(_selectedDay, day),
+                        headerStyle: HeaderStyle(
+                          formatButtonVisible: false,
+                          titleCentered: true,
+                          titleTextStyle: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color:
+                                isDark ? Colors.white : const Color(0xFF2C3E50),
+                          ),
+                          leftChevronIcon: Icon(
+                            Icons.chevron_left,
+                            color:
+                                isDark ? Colors.white : const Color(0xFF2C3E50),
+                          ),
+                          rightChevronIcon: Icon(
+                            Icons.chevron_right,
+                            color:
+                                isDark ? Colors.white : const Color(0xFF2C3E50),
+                          ),
                         ),
-                        leftChevronIcon: Icon(
-                          Icons.chevron_left,
-                          color: isDark ? Colors.white : const Color(0xFF2C3E50),
-                      ),
-                      rightChevronIcon: Icon(
-                        Icons.chevron_right,
-                        color: isDark ? Colors.white : const Color(0xFF2C3E50),
+                        calendarStyle: CalendarStyle(
+                          todayDecoration: BoxDecoration(
+                            color: const Color(0xFF80ED99)
+                                .withValues(alpha: 0.5),
+                            shape: BoxShape.circle,
+                          ),
+                          selectedDecoration: const BoxDecoration(
+                            color: Color(0xFF57CC99),
+                            shape: BoxShape.circle,
+                          ),
+                          markerDecoration: const BoxDecoration(
+                            color: Color(0xFFFFC857),
+                            shape: BoxShape.circle,
+                          ),
+                          markersMaxCount: 1,
+                          outsideDaysVisible: false,
+                        ),
+                        eventLoader: (day) => _getGastosDelDia(day),
+                        onDaySelected: (selectedDay, focusedDay) {
+                          setState(() {
+                            _selectedDay = selectedDay;
+                            _focusedDay = focusedDay;
+                          });
+                        },
+                        onPageChanged: (focusedDay) {
+                          _focusedDay = focusedDay;
+                        },
                       ),
                     ),
-                    calendarStyle: CalendarStyle(
-                      todayDecoration: BoxDecoration(
-                        color: const Color(0xFF80ED99).withValues(alpha: 0.5),
-                        shape: BoxShape.circle,
-                      ),
-                      selectedDecoration: const BoxDecoration(
-                        color: Color(0xFF57CC99),
-                        shape: BoxShape.circle,
-                      ),
-                      markerDecoration: const BoxDecoration(
-                        color: Color(0xFFFFC857),
-                        shape: BoxShape.circle,
-                      ),
-                      markersMaxCount: 1,
-                      outsideDaysVisible: false,
-                    ),
-                    eventLoader: (day) => _getGastosDelDia(day),
-                    onDaySelected: (selectedDay, focusedDay) {
-                      setState(() {
-                        _selectedDay = selectedDay;
-                        _focusedDay = focusedDay;
-                      });
-                    },
-                    onPageChanged: (focusedDay) {
-                      _focusedDay = focusedDay;
-                    },
                   ),
                 ),
 
                 // Resumen del día seleccionado
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF57CC99),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          DateFormat('EEEE, d MMMM yyyy').format(_selectedDay),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
+                centered(
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: horizontalPadding),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF57CC99),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            DateFormat('EEEE, d MMMM yyyy').format(_selectedDay),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          currencyFormat.format(totalDelDia),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
+                          const SizedBox(height: 8),
+                          Text(
+                            currencyFormat.format(totalDelDia),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        Text(
-                          '${gastosDelDiaSeleccionado.length} gasto${gastosDelDiaSeleccionado.length != 1 ? 's' : ''}',
-                          style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.9),
-                            fontSize: 14,
+                          Text(
+                            '${gastosDelDiaSeleccionado.length} gasto${gastosDelDiaSeleccionado.length != 1 ? 's' : ''}',
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.9),
+                              fontSize: 14,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -189,103 +222,123 @@ class _CalendarioScreenState extends State<CalendarioScreen> {
                 // Lista de gastos del día
                 Expanded(
                   child: gastosDelDiaSeleccionado.isEmpty
-                      ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.calendar_today_outlined,
-                                size: 64,
-                                color: Colors.grey[400],
+                      ? centered(
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: horizontalPadding),
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.calendar_today_outlined,
+                                    size: 64,
+                                    color: Colors.grey[400],
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    'No hay gastos este día',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                ],
                               ),
-                              const SizedBox(height: 16),
-                              Text(
-                                'No hay gastos este día',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         )
-                      : ListView.builder(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          itemCount: gastosDelDiaSeleccionado.length,
-                          itemBuilder: (context, index) {
-                            final gasto = gastosDelDiaSeleccionado[index];
-                            final categoria = CategoriaGasto.obtenerCategoria(
-                                gasto.categoria);
+                      : centered(
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: horizontalPadding),
+                            child: ListView.builder(
+                              padding: EdgeInsets.zero,
+                              itemCount: gastosDelDiaSeleccionado.length,
+                              itemBuilder: (context, index) {
+                                final gasto = gastosDelDiaSeleccionado[index];
+                                final categoria =
+                                    CategoriaGasto.obtenerCategoria(
+                                        gasto.categoria);
 
-                            return Card(
-                              margin: const EdgeInsets.only(bottom: 12),
-                              child: ListTile(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          DetalleGastoScreen(gasto: gasto),
-                                    ),
-                                  );
-                                },
-                                leading: Container(
-                                  width: 48,
-                                  height: 48,
-                                  decoration: BoxDecoration(
-                                    color: Color(categoria.color)
-                                        .withValues(alpha: 0.15),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      categoria.icono,
-                                      style: const TextStyle(fontSize: 24),
-                                    ),
-                                  ),
-                                ),
-                                title: Text(
-                                  gasto.nombre,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                subtitle: Text(
-                                  '${DateFormat('HH:mm').format(gasto.fechaCreacion)} • ${gasto.categoria}',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                                trailing: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      currencyFormat.format(gasto.subtotal),
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(categoria.color),
+                                return Card(
+                                  margin: const EdgeInsets.only(bottom: 12),
+                                  child: ListTile(
+                                    onTap: () async {
+                                      final actualizado =
+                                          await Navigator.push<bool>(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              DetalleGastoScreen(gasto: gasto),
+                                        ),
+                                      );
+                                      if (!mounted) return;
+                                      if (actualizado == true) {
+                                        _cargarGastos();
+                                      }
+                                    },
+                                    leading: Container(
+                                      width: 48,
+                                      height: 48,
+                                      decoration: BoxDecoration(
+                                        color: Color(categoria.color)
+                                            .withValues(alpha: 0.15),
+                                        borderRadius: BorderRadius.circular(12),
                                       ),
-                                    ),
-                                    if (gasto.cantidad > 1)
-                                      Text(
-                                        'x${gasto.cantidad}',
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          color: Colors.grey[500],
+                                      child: Center(
+                                        child: Text(
+                                          categoria.icono,
+                                          style: const TextStyle(fontSize: 24),
                                         ),
                                       ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
+                                    ),
+                                    title: Text(
+                                      gasto.nombre,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      '${DateFormat('HH:mm').format(gasto.fechaCreacion)} • ${gasto.categoria}',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                    trailing: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          currencyFormat.format(gasto.subtotal),
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(categoria.color),
+                                          ),
+                                        ),
+                                        if (gasto.cantidad > 1)
+                                          Text(
+                                            'x${gasto.cantidad}',
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              color: Colors.grey[500],
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                         ),
                 ),
               ],
-            ),
+            );
+          },
+        ),
       ),
     );
   }

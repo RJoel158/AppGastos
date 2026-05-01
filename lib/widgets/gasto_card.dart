@@ -239,8 +239,9 @@ class GastoCard extends StatelessWidget {
                           onPressed: onDecrementar,
                           color: const Color(0xFF57CC99),
                           tooltip: 'Disminuir',
-                          padding: const EdgeInsets.all(8),
-                          constraints: const BoxConstraints(),
+                          padding: const EdgeInsets.all(10),
+                          constraints:
+                              const BoxConstraints(minWidth: 40, minHeight: 40),
                         ),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -258,8 +259,9 @@ class GastoCard extends StatelessWidget {
                           onPressed: onIncrementar,
                           color: const Color(0xFF57CC99),
                           tooltip: 'Aumentar',
-                          padding: const EdgeInsets.all(8),
-                          constraints: const BoxConstraints(),
+                          padding: const EdgeInsets.all(10),
+                          constraints:
+                              const BoxConstraints(minWidth: 40, minHeight: 40),
                         ),
                       ],
                     ),
